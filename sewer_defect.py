@@ -1,8 +1,4 @@
 from dataclasses import dataclass
-<<<<<<< HEAD
-import keras.applications.vgg19
-=======
->>>>>>> bc5d06b5f17ae9e109622f37b040cfbfa745c742
 import os #특정 폴더로 이동해서 폴더에 있는 파일들을 리스트 형태로 저장가능 모듈 os.listdir()
 
 class NUM_class:
@@ -46,10 +42,4 @@ def calculate_risk(NUM_class):
     else:
         return 0;
 
-<<<<<<< HEAD
 threshold = calculate_risk(NUM_class);
-=======
-threshold = calculate_risk(NUM_class);
-
-def 
->>>>>>> bc5d06b5f17ae9e109622f37b040cfbfa745c742
