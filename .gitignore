@@ -3,3 +3,4 @@ model/sewer_weight_final.h5
 dataset/
 .ipynb_checkpoints/
 .DS_Store
+visualization/
