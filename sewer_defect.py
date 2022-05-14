@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-import os #특정 폴더로 이동해서 폴더에 있는 파일들을 리스트 형태로 저장가능 모듈 os.listdir()
+import os
 
 class NUM_class:
     class_A: int = 0;
@@ -43,3 +43,16 @@ def calculate_risk(NUM_class):
         return 0;
 
 threshold = calculate_risk(NUM_class);
+
+def calculate_cost(pipe_info):
+    pipe_cost = 0.0;
+    
+    if pipe_info.type == "CONC":
+        pipe_cost=  pipe_info.length * pipe_info.diameter * 512740;
+    elif pipe_info.type == "PLA":
+        pipe_cost=  pipe_info.length * pipe_info.diameter * 707247;
+    #더 추가
+    return pipe_cost;
+
+pipe_cost = calculate_cost(pipe_info);
+
