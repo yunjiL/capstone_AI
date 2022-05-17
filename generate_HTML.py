@@ -60,8 +60,6 @@ def generate_html(inp=None, out=None, img_list=None):
     if inp is not None and out is not None and img_list is None:
         if inp.split('.')[1] == 'jpg' or inp.split('.')[1] == 'png':
             picture_html += get_picture_html(inp, out)
-        elif inp.split('.')[1] == 'mp4':
-            picture_html += get_video_html(inp, out)
 
     file_content = html_string_start + picture_html + html_string_end
 

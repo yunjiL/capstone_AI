@@ -4,3 +4,4 @@ dataset/
 .ipynb_checkpoints/
 .DS_Store
 visualization/
+templates/
