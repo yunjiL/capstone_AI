@@ -55,12 +55,3 @@ def calculate_cost(pipe_info):
     return pipe_cost;
 
 pipe_cost = calculate_cost(pipe_info);
-
-def generate_HTML(defect_info):
-    import os 
-    print(os.path.isfile("html_test.html")) 
-    file = open('html_test.html','w',encoding='UTF-8') 
-    file.write("<html><head><title>테스트 타이틀</title></head><body>테스트 입니다. </body></html>") 
-    file.close()
-
-
