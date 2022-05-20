@@ -31,9 +31,6 @@ class pipe_info:
 
 pipe_cost = 0;
 
-#NUM_total_img = 0;
-
-NUM_complete_pipe = 0;
 
 def count_gauge(NUM_total_img, NUM_complete_pipe):
     calc_progress = NUM_complete_pipe / NUM_total_img;
@@ -162,6 +159,7 @@ with CustomObjectScope({'GlorotUniform': glorot_uniform()}):
 
 #이미지 총 개수
 NUM_total_img = len(os.listdir(folder_path));
+NUM_complete_pipe = 0;
 
 for img in os.listdir(folder_path):
     detect_defect(img, model);
