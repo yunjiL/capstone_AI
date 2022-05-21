@@ -1,57 +1,51 @@
-from dataclasses import dataclass
+from keras.applications.vgg19 import VGG19
+from keras.models import Model
+from keras.layers import GlobalAveragePooling2D, Dense
+from keras.callbacks import ModelCheckpoint
+from keras.preprocessing.image import ImageDataGenerator
+from keras.optimizers import gradient_descent_v2
 import os
 
-class NUM_class:
-    class_A: int = 0;
-    class_B: int = 0;
-    class_C: int = 0;
+os.environ["CUDA_VISIBLE_DEVICES"] = "1,2,3"
 
-class Defect_info:
-    Img_loc: str;
-    defect: str;
-    Class: chr;
+def eachFile(filepath):
+	pathDir = os.listdir(filepath)
+	out = []
+	for allDir in pathDir:
+		child = allDir
+		out.append(child)
+	return out
 
-class pipe_info:
-    type: str;
-    length: float;
-    diameter: float;
 
-pipe_cost = 0;
+NUM_CLASSES = 10
+TRAIN_PATH = 'dataset/train/'
+TEST_PATH = 'dataset/test/'
 
-NUM_total_img = 1;
+FC_NUMS = 4096
 
-NUM_complete_pipe = 0;
+FREEZE_LAYERS = 17
 
-def count_gauge(NUM_total_img, NUM_complete_pipe):
-    calc_progress = NUM_complete_pipe % NUM_total_img;
-    
-    return calc_progress;
+IMAGE_SIZE = 224
 
-calc_progress = count_gauge(NUM_total_img, NUM_complete_pipe);
+base_model = VGG19(input_shape=(IMAGE_SIZE, IMAGE_SIZE, 3), include_top=False, weights='imagenet')
+x = base_model.output
+x = GlobalAveragePooling2D()(x)
+x = Dense(4096, activation='relu')(x)
+prediction = Dense(NUM_CLASSES, activation='softmax')(x)
 
-def calculate_risk(NUM_class):
-    Defect_sum = 0;
-    
-    if NUM_class.class_A != 0:
-        return 1;
-    Defect_sum += NUM_class.class_B * 20;
-    Defect_sum += NUM_class.class_C * 5;
-    
-    if Defect_sum >= 100:
-        return 1;
-    else:
-        return 0;
+model = Model(inputs=base_model.input, outputs=prediction)
 
-threshold = calculate_risk(NUM_class);
+for layer in model.layers[:FREEZE_LAYERS]:
+    layer.trainable = False
+for layer in model.layers[FREEZE_LAYERS:]:
+    layer.trainable = True
 
-def calculate_cost(pipe_info):
-    pipe_cost = 0.0;
-    
-    if pipe_info.type == "CONC":
-        pipe_cost=  pipe_info.length * pipe_info.diameter * 512740;
-    elif pipe_info.type == "PLA":
-        pipe_cost=  pipe_info.length * pipe_info.diameter * 707247;
-    #더 추가
-    return pipe_cost;
+model.compile(optimizer=gradient_descent_v2.SGD(learning_rate=0.001, momentum=0.9), loss='categorical_crossentropy', metrics=['accuracy'])
+train_datagen = ImageDataGenerator()
+train_generator = train_datagen.flow_from_directory(directory=TRAIN_PATH,
+                                                    target_size=(IMAGE_SIZE, IMAGE_SIZE), classes=eachFile(TRAIN_PATH))
+filepath = 'model/sewer_weight.h5'
+checkpoint = ModelCheckpoint(filepath, monitor='loss', verbose=1, save_best_only=True, mode='min')
 
-pipe_cost = calculate_cost(pipe_info);
+history_ft = model.fit_generator(train_generator, epochs=10, callbacks=[checkpoint])
+model.save('model/sewer_weight_final.h5')
