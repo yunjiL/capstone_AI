@@ -1,5 +1,6 @@
 model/sewer_weight.h5
 model/sewer_weight_final.h5
+model_sample/
 dataset/
 .ipynb_checkpoints/
 .DS_Store
