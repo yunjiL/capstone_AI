@@ -72,14 +72,16 @@ html_string_end = """
 {% endblock %}
 """
 
-def get_picture_html(out, Imgclass):
+def get_picture_html(out, Imgclass, NUM_complete_pipe):
     image_html = """
-        <p> {out_name} </p>
-        <img id="result-output" src= "../visualization/sd/{out_name}"/ width = "300">
-        
-        <p>{Imgclass_}</p>
+    <tr>
+        <th scope="row">{num}</th>
+        <td>{Imgclass_}</td>
+        <td></td>
+        <td><img src="../visualization/sd/{out_name}" width=200></td>
+    </tr>
     """
-    return image_html.format(out_name=out, Imgclass_=Imgclass)
+    return image_html.format(out_name=out, Imgclass_=Imgclass, num = NUM_complete_pipe)
 
 
 def get_count_html(category, count):
@@ -97,16 +99,16 @@ def get_value_count(image_class_dict):
     return count_dic
 
 
-def generate_html(out=None, Imgclass=None):
+def generate_html(out=None, Imgclass=None, NUM_complete_pipe=None):
     picture_html = ""
 
     if out is not None:
         if out.split('.')[1] == 'jpg' or out.split('.')[1] == 'png':
-            picture_html += get_picture_html(out, Imgclass)
+            picture_html += get_picture_html(out, Imgclass, NUM_complete_pipe)
 
     file_content = picture_html
 
-    with open('templates/results.html', 'a') as f:
+    with open('templates/generate.html', 'a') as f:
         f.write(file_content)
         
 def detect_defect(img, model):
@@ -139,11 +141,10 @@ def detect_defect(img, model):
             NUM_class.class_B += 1;
         elif classname[idxs[i]] in classC:
             NUM_class.class_C += 1;
-        #print("%d %d %d\n", NUM_class.class_A, NUM_class.class_B, NUM_class.class_C);
         
         cv2.putText(out, label, (10, (i * 30) + 25), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
     
-    generate_html(img, img_class);
+    generate_html(img, img_class, NUM_complete_pipe);
     
     cv2.imwrite("visualization/sd/%s"%img,out)
 
@@ -161,10 +162,10 @@ with CustomObjectScope({'GlorotUniform': glorot_uniform()}):
 NUM_total_img = len(os.listdir(folder_path));
 NUM_complete_pipe = 0;
 
+#이미지 결함 분류
 for img in os.listdir(folder_path):
-    detect_defect(img, model);
     NUM_complete_pipe += 1;
+    detect_defect(img, model);
     calc_progress = count_gauge(NUM_total_img, NUM_complete_pipe);
-    #진행상황도 프론트에 보내야함.
 
 threshold = calculate_risk(NUM_class);

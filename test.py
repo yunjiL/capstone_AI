@@ -1,4 +1,3 @@
-
 from tensorflow.python.keras.initializers import glorot_uniform
 from keras.models import load_model
 from keras.preprocessing import image
