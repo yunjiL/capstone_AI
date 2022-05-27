@@ -7,7 +7,6 @@ import cv2
 from keras.utils.generic_utils import CustomObjectScope
 from keras.preprocessing.image import  img_to_array
 from dataclasses import dataclass
-#import sewer_defect
 
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "1,2,3"

@@ -50,15 +50,6 @@ def calculate_risk(NUM_class):
     else:
         return 0;
 
-def calculate_cost(pipe_info): #추가적으로 적어야함!!! + 프론트에서 할 수도 있음 일단 냅두기
-    pipe_cost = 0.0;
-    
-    if pipe_info.type == "CONC":
-        pipe_cost=  pipe_info.length * pipe_info.diameter * 512740;
-    elif pipe_info.type == "PLA":
-        pipe_cost=  pipe_info.length * pipe_info.diameter * 707247;
-    #더 추가
-    return pipe_cost;
 
 html_string_start = """
 {% extends "layout.html" %}
@@ -111,10 +102,7 @@ def generate_html(out=None, Imgclass=None, NUM_complete_pipe=None):
     with open('templates/generate.html', 'a') as f:
         f.write(file_content)
         
-def detect_defect(img, model):
-    # image folder
-    folder_path = 'dataset/test/'
-
+def detect_defect(img, model, folder_path):
     # dimensions of images
     img_width, img_height = 224, 224
     i = 0
@@ -122,6 +110,7 @@ def detect_defect(img, model):
     img1 = image.load_img(os.path.join(folder_path, img), target_size=(img_width, img_height))
     img2 = img_to_array(img1)
     img2 = np.expand_dims(img2, axis=0)
+    img2.shape
     classes = model.predict(img2)[0]
     idxs = np.argsort(classes)[::-1][:2]
 
@@ -165,7 +154,7 @@ NUM_complete_pipe = 0;
 #이미지 결함 분류
 for img in os.listdir(folder_path):
     NUM_complete_pipe += 1;
-    detect_defect(img, model);
+    detect_defect(img, model, folder_path);
     calc_progress = count_gauge(NUM_total_img, NUM_complete_pipe);
 
 threshold = calculate_risk(NUM_class);
